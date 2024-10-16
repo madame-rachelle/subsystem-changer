@@ -39,8 +39,10 @@ void changeSubsystem(const char* filePath)
 	{
 	case IMAGE_SUBSYSTEM_WINDOWS_CUI:
 		std::cout << "Console (CLI) subsystem\n";
+		break;
 	case IMAGE_SUBSYSTEM_WINDOWS_GUI:
 		std::cout << "Windows (GUI) subsystem\n";
+		break;
 	default:
 		std::cout << ntHeaders.OptionalHeader.Subsystem << std::endl;
 		break;
