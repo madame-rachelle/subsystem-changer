@@ -2,6 +2,7 @@
 #include <fstream>
 #include <filesystem>
 #include <windows.h>
+#include <ostream>
 
 void changeSubsystem(const char* filePath)
 {
@@ -32,15 +33,39 @@ void changeSubsystem(const char* filePath)
 	}
 
 	// Display current subsystem
-	std::cout << "Current Subsystem: " << ntHeaders.OptionalHeader.Subsystem << std::endl;
+	std::cout << "Current Subsystem: ";
+
+	switch(ntHeaders.OptionalHeader.Subsystem)
+	{
+	case IMAGE_SUBSYSTEM_WINDOWS_CUI:
+		std::cout << "Console (CLI) subsystem\n";
+	case IMAGE_SUBSYSTEM_WINDOWS_GUI:
+		std::cout << "Windows (GUI) subsystem\n";
+	default:
+		std::cout << ntHeaders.OptionalHeader.Subsystem << std::endl;
+		break;
+	}
 
 	WORD newSubsystem = (ntHeaders.OptionalHeader.Subsystem == IMAGE_SUBSYSTEM_WINDOWS_GUI) ?
 		IMAGE_SUBSYSTEM_WINDOWS_CUI : IMAGE_SUBSYSTEM_WINDOWS_GUI;
 
 	if (newSubsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI)
-		std::cout << "Changing to Console (CLI) subsystem" << std::endl;
+		std::cout << "Change to Console (CLI) subsystem (y/N)? ";
 	else
-		std::cout << "Changing to Windows (GUI) subsystem" << std::endl;
+		std::cout << "Change to Windows (GUI) subsystem (y/N)? ";
+
+	// query user response
+
+	char response;
+	std::cin >> response;
+
+	std::cout << std::endl;
+
+	if (response != 'Y' && response != 'y')
+	{
+		std::cout << "Operation cancelled." << std::endl;
+		return;
+	}
 
 	// Modify subsystem
 	ntHeaders.OptionalHeader.Subsystem = newSubsystem;
